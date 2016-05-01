@@ -1,0 +1,38 @@
+body {
+  width:300px;
+  height:400px;
+  margin: 7px;
+}
+.comment:nth-child(odd) {
+    background: rgb(245, 245, 255);
+}
+.comment:nth-child(odd) {
+    background: rgb(247, 247, 248);
+}
+.comment li {
+  list-style: none;
+}
+h1 {
+  width: 100%;
+  background: #29adff;
+  margin: 0;
+  color: white;
+  padding: 10px;
+}
+.postUps {
+  display: inline-block;
+  width: 10%;
+  margin-right: 25px;
+  vertical-align: middle;
+}
+.postTitle {
+  width: 77%;
+  display: inline-block;
+  vertical-align: middle;
+}
+.post {
+  padding: 20px;
+}
+.post:nth-child(even) {
+  background: rgb(247, 247, 248);
+}
