@@ -3,24 +3,66 @@ var xhr = new XMLHttpRequest();
 xhr.open("GET", "http://www.reddit.com/r/askreddit.json?", true);
 xhr.onreadystatechange = function() {
  if (xhr.readyState == 4) {
-   // WARNING! Might be injecting a malicious script!\
+   var sub;
+   if(xhr.responseURL.indexOf('/r/') > 0) {
+     var str = xhr.responseURL.slice(xhr.responseURL.indexOf('/r/') + 3);
+     sub = str.slice(0, str.indexOf('.'));
+   }
    var jsonString = JSON.parse(xhr.responseText)
    var posts = jsonString.data.children;
    for(var i = 2; i < posts.length; i++) {
-     var post = '<div class="post" id="post'+ i + '"></div>';
-     var title = '<a href="' + posts[i].data.url + '" id="post'+ i + '" class="postTitle">' + posts[i].data.title + '</a>';
+     console.log(posts[i].data);
+     var post = '<div class="post" id="'+ posts[i].data.name + '"></div>';
+     var title = '<a href="' + posts[i].data.url + '" id="'+posts[i].data.name+' " class="postTitle">' + posts[i].data.title + '</a>';
      var upvotes = '<span class="postUps">' + posts[i].data.ups + '</span>';
      $('#reddit-content').append(post);
-     $('#post' +i).append(upvotes);
-     $('#post' +i).append(title);
-
+     $('#' +posts[i].data.name).append(upvotes);
+     $('#' +posts[i].data.name).append(title);
    }
+   var lastPost = $('.post').last().attr("id");
+   var loadMore = '<a id="loadMore" href="http://www.reddit.com/r/'+sub+'.json?'+lastPost+'" >Load More</a>';
+   $('#reddit-content').append(loadMore);
  }
 }
 xhr.send();
 
 $(document).ready(function(){
-   $('body').on('click', 'a', function(){
+   $('body').on('click', '#loadMore', function(){
+     $('.post').remove();
+     $('#loadMore').remove();
+     var link = this.href.slice(0, this.href.indexOf('?'));
+     var lastPost = this.href.slice(this.href.indexOf('?')+1);
+     var xhr = new XMLHttpRequest();
+     xhr.open("GET", link + '?count=25&after=' + lastPost  , true);
+     xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        var sub;
+        if(xhr.responseURL.indexOf('/r/') > 0) {
+          var str = xhr.responseURL.slice(xhr.responseURL.indexOf('/r/') + 3);
+          sub = str.slice(0, str.indexOf('.'));
+        }
+        var jsonString = JSON.parse(xhr.responseText)
+        var posts = jsonString.data.children;
+        for(var i = 2; i < posts.length; i++) {
+          console.log(posts[i].data);
+          var post = '<div class="post" id="'+ posts[i].data.name + '"></div>';
+          var title = '<a href="' + posts[i].data.url + '" id="'+posts[i].data.name+' " class="postTitle">' + posts[i].data.title + '</a>';
+          var upvotes = '<span class="postUps">' + posts[i].data.ups + '</span>';
+          $('#reddit-content').append(post);
+          $('#' +posts[i].data.name).append(upvotes);
+          $('#' +posts[i].data.name).append(title);
+        }
+        var lastPost = $('.post').last().attr("id");
+        var loadMore = '<a id="loadMore" href="http://www.reddit.com/r/'+sub+'.json?'+lastPost+'" >Load More</a>';
+        $('#reddit-content').append(loadMore);
+      }
+     }
+     xhr.send();
+   });
+ });
+
+$(document).ready(function(){
+   $('body').on('click', '.postTitle', function(){
      if(this.href.indexOf('reddit') > 0) {
        $('.postContent').remove()
        $('.comment').remove()
