@@ -67,6 +67,8 @@ $(document).ready(function(){
       $('#subSubmit').remove();
       $('#reddit-content').remove();
       $('#subtitle').remove();
+      $('.postContent').remove()
+      $('.comment').remove()
       getSubPosts(sub);
     });
   });
@@ -79,6 +81,8 @@ $(document).ready(function(){
      $('#subtitle').remove();
      $('#changeSub').remove();
      $('#loadMore').remove();
+     $('.postContent').remove()
+     $('.comment').remove()
      var sub;
      if(this.href.indexOf('/r/') > 0) {
        var str = this.href.slice(this.href.indexOf('/r/') + 3);
