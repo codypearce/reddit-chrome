@@ -1,31 +1,59 @@
+function getSubPosts(subreddit) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "http://www.reddit.com/r/"+subreddit+".json?", true);
+  xhr.onreadystatechange = function() {
+   if (xhr.readyState == 4) {
+     var sub;
+     if(xhr.responseURL.indexOf('/r/') > 0) {
+       var str = xhr.responseURL.slice(xhr.responseURL.indexOf('/r/') + 3);
+       sub = str.slice(0, str.indexOf('.'));
+     }
+     $('#title').after('<button id="changeSub" value="'+sub+'">Change Sub</button>')
+     $('#changeSub').after('<h2 id=subtitle>' + sub + '</h2>');
+     $('#subtitle').after('<div id="reddit-content"></div>');
 
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "http://www.reddit.com/r/askreddit.json?", true);
-xhr.onreadystatechange = function() {
- if (xhr.readyState == 4) {
-   var sub;
-   if(xhr.responseURL.indexOf('/r/') > 0) {
-     var str = xhr.responseURL.slice(xhr.responseURL.indexOf('/r/') + 3);
-     sub = str.slice(0, str.indexOf('.'));
+     var jsonString = JSON.parse(xhr.responseText)
+     var posts = jsonString.data.children;
+     for(var i = 2; i < posts.length; i++) {
+       var post = '<div class="post" id="'+ posts[i].data.name + '"></div>';
+       var title = '<a href="' + posts[i].data.url + '" id="'+posts[i].data.name+' " class="postTitle">' + posts[i].data.title + '</a>';
+       var upvotes = '<span class="postUps">' + posts[i].data.ups + '</span>';
+       $('#reddit-content').append(post);
+       $('#' +posts[i].data.name).append(upvotes);
+       $('#' +posts[i].data.name).append(title);
+     }
+     var lastPost = $('.post').last().attr("id");
+     var loadMore = '<a id="loadMore" href="http://www.reddit.com/r/'+sub+'.json?'+lastPost+'" >Load More</a>';
+     $('#reddit-content').append(loadMore);
    }
-   var jsonString = JSON.parse(xhr.responseText)
-   var posts = jsonString.data.children;
-   for(var i = 2; i < posts.length; i++) {
-     console.log(posts[i].data);
-     var post = '<div class="post" id="'+ posts[i].data.name + '"></div>';
-     var title = '<a href="' + posts[i].data.url + '" id="'+posts[i].data.name+' " class="postTitle">' + posts[i].data.title + '</a>';
-     var upvotes = '<span class="postUps">' + posts[i].data.ups + '</span>';
-     $('#reddit-content').append(post);
-     $('#' +posts[i].data.name).append(upvotes);
-     $('#' +posts[i].data.name).append(title);
-   }
-   var lastPost = $('.post').last().attr("id");
-   var loadMore = '<a id="loadMore" href="http://www.reddit.com/r/'+sub+'.json?'+lastPost+'" >Load More</a>';
-   $('#reddit-content').append(loadMore);
- }
+  }
+  xhr.send();
 }
-xhr.send();
+getSubPosts('all');
+// Choose sub name
+$(document).ready(function(){
+   $('body').on('click', '#changeSub', function(){
+     var sub = this.value;
+     $('#title').after('<input name="sub" type="text" id="subInput"/>');
+     $('#subInput').after('<button type="submit" id="subSubmit">Submit</button');
+     $('#changeSub').remove();
+   });
+ });
 
+ // Change Sub
+ $(document).ready(function(){
+    $('body').on('click', '#subSubmit', function(){
+      var sub = $('#subInput').val();
+      $('#subInput').remove();
+      $('#subSubmit').remove();
+      $('#reddit-content').remove();
+      $('#subtitle').remove();
+      getSubPosts(sub);
+    });
+  });
+
+
+// Load More
 $(document).ready(function(){
    $('body').on('click', '#loadMore', function(){
      $('.post').remove();
@@ -61,6 +89,7 @@ $(document).ready(function(){
    });
  });
 
+// Get and Display Posts and Comments
 $(document).ready(function(){
    $('body').on('click', '.postTitle', function(){
      if(this.href.indexOf('reddit') > 0) {

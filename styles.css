@@ -3,22 +3,46 @@ body {
   height:400px;
   margin: 7px;
 }
-.comment:nth-child(odd) {
-    background: rgb(245, 245, 255);
-}
-.comment:nth-child(odd) {
-    background: rgb(247, 247, 248);
-}
-.comment li {
-  list-style: none;
-}
-h1 {
+
+
+#title {
   width: 100%;
   background: #29adff;
   margin: 0;
   color: white;
   padding: 10px;
 }
+#subtitle {
+  width: 100%;
+  margin: 5px 0;
+  color: rgb(166, 166, 166);
+  text-align: center;
+}
+
+#changeSub {
+  width: 103%;
+  color: white;
+  background: rgb(52, 217, 113);
+  border: none;
+  padding: 5px 0;
+  text-align: center;
+  cursor: pointer;
+}
+#subInput {
+  width: 70%;
+  padding: 5px 0;
+
+}
+#subSubmit {
+  width: 27%;
+  padding: 7px 0;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  background: rgb(52, 217, 113);
+  color: white;
+}
+
 .postUps {
   display: inline-block;
   width: 10%;
@@ -35,6 +59,16 @@ h1 {
 }
 .post:nth-child(even) {
   background: rgb(247, 247, 248);
+}
+
+.comment:nth-child(odd) {
+    background: rgb(245, 245, 255);
+}
+.comment:nth-child(odd) {
+    background: rgb(247, 247, 248);
+}
+.comment li {
+  list-style: none;
 }
 
 #loadMore {
