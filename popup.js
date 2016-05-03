@@ -1,6 +1,9 @@
-function getSubPosts(subreddit) {
+function getSubPosts(subreddit, lastPost) {
+  if(!lastPost) {
+    lastPost = '';
+  }
   var xhr = new XMLHttpRequest();
-  xhr.open("GET", "http://www.reddit.com/r/"+subreddit+".json?", true);
+  xhr.open("GET", 'http://www.reddit.com/r/' + subreddit + ".json?" + lastPost, true);
   xhr.onreadystatechange = function() {
    if (xhr.readyState == 4) {
      var sub;
@@ -16,11 +19,17 @@ function getSubPosts(subreddit) {
      var posts = jsonString.data.children;
      for(var i = 2; i < posts.length; i++) {
        var post = '<div class="post" id="'+ posts[i].data.name + '"></div>';
-       var title = '<a href="' + posts[i].data.url + '" id="'+posts[i].data.name+' " class="postTitle">' + posts[i].data.title + '</a>';
+       var title = '<a href="' + posts[i].data.url + '" id="'+posts[i].data.name+' " class="postTitle postLink">' + posts[i].data.title + '</a>';
        var upvotes = '<span class="postUps">' + posts[i].data.ups + '</span>';
+       var subby = '<span class="postSub">r/' + posts[i].data.subreddit + '</span>';
+       var author = '<a class="postSub" id="userAccount" href="https://www.reddit.com/user/'+posts[i].data.author+'">by ' + posts[i].data.author + '</a>';
+       var commentLink = '<a class="postSub postLink" id="'+posts[i].data.name+'" href="https://www.reddit.com'+ posts[i].data.permalink + '">' + posts[i].data.num_comments + ' comments</a>';
        $('#reddit-content').append(post);
        $('#' +posts[i].data.name).append(upvotes);
        $('#' +posts[i].data.name).append(title);
+       $('#' +posts[i].data.name).append(subby);
+       $('#' +posts[i].data.name).append(author);
+       $('#' +posts[i].data.name).append(commentLink);
      }
      var lastPost = $('.post').last().attr("id");
      var loadMore = '<a id="loadMore" href="http://www.reddit.com/r/'+sub+'.json?'+lastPost+'" >Load More</a>';
@@ -57,41 +66,22 @@ $(document).ready(function(){
 $(document).ready(function(){
    $('body').on('click', '#loadMore', function(){
      $('.post').remove();
+     $('#subtitle').remove();
+     $('#changeSub').remove();
      $('#loadMore').remove();
-     var link = this.href.slice(0, this.href.indexOf('?'));
-     var lastPost = this.href.slice(this.href.indexOf('?')+1);
-     var xhr = new XMLHttpRequest();
-     xhr.open("GET", link + '?count=25&after=' + lastPost  , true);
-     xhr.onreadystatechange = function() {
-      if (xhr.readyState == 4) {
-        var sub;
-        if(xhr.responseURL.indexOf('/r/') > 0) {
-          var str = xhr.responseURL.slice(xhr.responseURL.indexOf('/r/') + 3);
-          sub = str.slice(0, str.indexOf('.'));
-        }
-        var jsonString = JSON.parse(xhr.responseText)
-        var posts = jsonString.data.children;
-        for(var i = 2; i < posts.length; i++) {
-          console.log(posts[i].data);
-          var post = '<div class="post" id="'+ posts[i].data.name + '"></div>';
-          var title = '<a href="' + posts[i].data.url + '" id="'+posts[i].data.name+' " class="postTitle">' + posts[i].data.title + '</a>';
-          var upvotes = '<span class="postUps">' + posts[i].data.ups + '</span>';
-          $('#reddit-content').append(post);
-          $('#' +posts[i].data.name).append(upvotes);
-          $('#' +posts[i].data.name).append(title);
-        }
-        var lastPost = $('.post').last().attr("id");
-        var loadMore = '<a id="loadMore" href="http://www.reddit.com/r/'+sub+'.json?'+lastPost+'" >Load More</a>';
-        $('#reddit-content').append(loadMore);
-      }
+     var sub;
+     if(this.href.indexOf('/r/') > 0) {
+       var str = this.href.slice(this.href.indexOf('/r/') + 3);
+       sub = str.slice(0, str.indexOf('.'));
      }
-     xhr.send();
+     var lastPost = '?count=25&after=' + this.href.slice(this.href.indexOf('?')+1);
+     getSubPosts(sub, lastPost);
    });
  });
 
-// Get and Display Posts and Comments
+// Get and Display Post Comments
 $(document).ready(function(){
-   $('body').on('click', '.postTitle', function(){
+   $('body').on('click', '.postLink', function(){
      if(this.href.indexOf('reddit') > 0) {
        $('.postContent').remove()
        $('.comment').remove()
