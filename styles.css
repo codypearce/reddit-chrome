@@ -36,3 +36,14 @@ h1 {
 .post:nth-child(even) {
   background: rgb(247, 247, 248);
 }
+
+#loadMore {
+  display: block;
+  padding: 10px 15px;
+  width: 100%;
+  background: #29adff;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+}
