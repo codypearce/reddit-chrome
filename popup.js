@@ -130,3 +130,10 @@ $(document).ready(function(){
      return false;
    });
 });
+
+// Get and Display Post Comments
+$(document).ready(function(){
+   $('body').on('click', '#userAccount', function(){
+       return chrome.tabs.create({url: $(this).attr('href')});
+   });
+});
