@@ -2,6 +2,9 @@ function getSubPosts(subreddit, lastPost) {
   if(!lastPost) {
     lastPost = '';
   }
+  if(!subreddit) {
+    subreddit = localStorage['lastVisitedSub'] || 'all';
+  }
   var xhr = new XMLHttpRequest();
   xhr.open("GET", 'http://www.reddit.com/r/' + subreddit + ".json?" + lastPost, true);
   xhr.onreadystatechange = function() {
@@ -11,10 +14,15 @@ function getSubPosts(subreddit, lastPost) {
        var str = xhr.responseURL.slice(xhr.responseURL.indexOf('/r/') + 3);
        sub = str.slice(0, str.indexOf('.'));
      }
+     // save current sub to local storage to perist browsing
+     localStorage['lastVisitedSub'] = sub
+
+     // title and change sub
      $('#title').after('<button id="changeSub" value="'+sub+'">Change Sub</button>')
      $('#changeSub').after('<h2 id=subtitle>' + sub + '</h2>');
      $('#subtitle').after('<div id="reddit-content"></div>');
 
+     // get posts
      var jsonString = JSON.parse(xhr.responseText)
      var posts = jsonString.data.children;
      for(var i = 2; i < posts.length; i++) {
@@ -38,7 +46,9 @@ function getSubPosts(subreddit, lastPost) {
   }
   xhr.send();
 }
-getSubPosts('all');
+
+getSubPosts();
+
 // Choose sub name
 $(document).ready(function(){
    $('body').on('click', '#changeSub', function(){
@@ -99,8 +109,8 @@ $(document).ready(function(){
           var comments = jsonString[1].data.children;
           for(var i = 0; i < comments.length; i++) {
             var comment = "<ul class='comment' id='comment"+ i + "'></ul>"
-            var author ='<li id="author'+i+'">' + comments[i].data.author + ' </li>';
-            var ups ='<span>' + comments[i].data.ups + ' </span>';
+            var author ='<li id="author'+i+'" class="commentAuthor">' + comments[i].data.author + ' </li>';
+            var ups ='<span class="commentUps">' + comments[i].data.ups + ' </span>';
             var body ='<li >' + comments[i].data.body + ' </li>';
             $('.postContent').append(comment);
             $('#comment' + i).append(author);

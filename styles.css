@@ -67,6 +67,10 @@ body {
   display: inline-block;;
 }
 
+.comment {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
 .comment:nth-child(odd) {
     background: rgb(245, 245, 255);
 }
@@ -75,8 +79,15 @@ body {
 }
 .comment li {
   list-style: none;
+  margin-top: 10px;
+
 }
 
+.commentUps {
+  font-weight: bold;
+  display: inline-block;
+  margin-left: 15px;
+}
 #loadMore {
   display: block;
   padding: 10px 15px;
