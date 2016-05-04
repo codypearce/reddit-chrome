@@ -25,7 +25,7 @@ function getSubPosts(subreddit, lastPost) {
      // get posts
      var jsonString = JSON.parse(xhr.responseText)
      var posts = jsonString.data.children;
-     for(var i = 2; i < posts.length; i++) {
+     for(var i = 0; i < posts.length; i++) {
        var post = '<div class="post" id="'+ posts[i].data.name + '"></div>';
        var title = '<a href="' + posts[i].data.url + '" id="'+posts[i].data.name+' " class="postTitle postLink">' + posts[i].data.title + '</a>';
        var upvotes = '<span class="postUps">' + posts[i].data.ups + '</span>';
