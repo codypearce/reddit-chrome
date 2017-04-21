@@ -11,7 +11,7 @@ Click the icon and an extension will pop out loading the first 25 posts of the l
 
 You can change to any subreddit by clicking the change sub button and entering the subreddit you would like to browse. You can load the next page by clicking the load more button at the bottom.
 
-##Features
+## Features
 
 * Browse reddit on any page in chrome
 * Browse any subreddit with ease
